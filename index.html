@@ -100,7 +100,6 @@
 
 /* ══ RESET ══════════════════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-/* ROOT FONT SIZE BUMPED TO 16px FOR BETTER READABILITY */
 html { font-size: 16px; scroll-behavior: smooth; color-scheme: dark; }
 body {
   font-family: var(--sans);
@@ -219,6 +218,11 @@ a { color: inherit; text-decoration: none; }
 .btn-fin:hover { background: var(--sky); color: var(--bg); font-weight: 700; }
 .btn-sm { padding: .4rem .8rem; font-size: .7rem; }
 .btn-icon { width: 34px; height: 34px; padding: 0; justify-content: center; border-radius: var(--r); font-size: 1.1rem;}
+
+/* ══ HERO ACTION WRAPPER (For massive mobile-friendly primary buttons) ══ */
+.hero-action-wrap { margin-bottom: 1.5rem; }
+.hero-action-wrap .btn { width: 100%; justify-content: center; padding: 1rem; font-size: 1.05rem; font-weight: 700; box-shadow: var(--shadow); }
+.hero-action-wrap .btn:hover { filter: brightness(1.15); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
 
 /* Apply tints inside views */
 #view-inventory .form-card, #view-inventory .data-table-wrap, #view-inventory .card, #view-inventory .summary-card { border-top-color: var(--grove); }
@@ -392,14 +396,14 @@ a { color: inherit; text-decoration: none; }
 .sync-banner .desc { font-size: .95rem; color: var(--ink-2); }
 
 /* ══ FINANCE SECTION SPECIFIC ════════════════════════════════════ */
-.fin-balance-card { background: var(--surface); border: 1px solid var(--border-soft); border-top: 3px solid var(--mod-accent, var(--plum)); border-radius: var(--r-xl); padding: 2.2rem; text-align: center; margin-bottom: 1.5rem; box-shadow: var(--shadow-lg); position: relative; overflow: hidden; }
-.fin-balance-card .label { font-family: var(--mono); font-size: .75rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); margin-bottom: .8rem; }
-.fin-balance-card .amount { font-family: var(--serif); font-size: 3.8rem; font-weight: 700; color: var(--fin-income); line-height: 1; margin-bottom: .8rem; }
+.fin-balance-card { background: var(--surface); border: 1px solid var(--border-soft); border-top: 3px solid var(--mod-accent, var(--plum)); border-radius: var(--r-xl); padding: 1.6rem; text-align: center; margin-bottom: 1.5rem; box-shadow: var(--shadow-lg); position: relative; overflow: hidden; }
+.fin-balance-card .label { font-family: var(--mono); font-size: .75rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); margin-bottom: .6rem; }
+.fin-balance-card .amount { font-family: var(--serif); font-size: 2.8rem; font-weight: 700; color: var(--fin-income); line-height: 1; margin-bottom: .6rem; }
 .fin-balance-card .amount.neg { color: var(--fin-spend); }
 .fin-balance-card .sub { font-family: var(--mono); font-size: .75rem; color: var(--ink-3); background: var(--bg); border: 1px solid var(--border-soft); display: inline-block; padding: .3rem .9rem; border-radius: 100px; }
 
 .fin-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; margin-bottom: 1.5rem; }
-.fin-stat-card { background: var(--surface); border: 1px solid var(--border-soft); border-top: 3px solid var(--mod-accent, var(--plum)); border-radius: var(--r-lg); padding: 1.8rem; box-shadow: var(--shadow); }
+.fin-stat-card { background: var(--surface); border: 1px solid var(--border-soft); border-top: 3px solid var(--mod-accent, var(--plum)); border-radius: var(--r-lg); padding: 1.5rem; box-shadow: var(--shadow); }
 .fin-stat-card .label { font-family: var(--mono); font-size: .65rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); margin-bottom: .5rem; display: flex; align-items: center; gap: .5rem; }
 .fin-stat-card .amount { font-family: var(--serif); font-size: 1.8rem; font-weight: 700; }
 .fin-stat-card .note { font-family: var(--mono); font-size: .7rem; color: var(--ink-3); margin-top: .3rem; }
@@ -473,7 +477,7 @@ a { color: inherit; text-decoration: none; }
 
 /* ══ PRINT ════════════════════════════════════════════════════════ */
 @media print {
-  .masthead, .primary-nav, .form-card, .btn, .mic-btn, .filter-strip, .section-header > div, #toast-container, .sync-banner, .shop-to-fin { display: none !important; }
+  .masthead, .primary-nav, .form-card, .btn, .mic-btn, .filter-strip, .section-header > div, #toast-container, .sync-banner, .shop-to-fin, .hero-action-wrap { display: none !important; }
   .view:not(.active) { display: none !important; }
   .data-table-wrap { box-shadow: none; border: 1px solid #ccc; }
   body { background: #fff !important; color: #000 !important; }
@@ -640,7 +644,7 @@ a { color: inherit; text-decoration: none; }
       <h2>System <span>Config</span></h2>
       <p>Manage data persistence, export ledgers to CSV, share app, or wipe local data.</p>
       <div class="card-summary">
-        <div>v2.0.4 · Scaled UI</div>
+        <div>v2.0.5 · UX Scaled</div>
       </div>
     </div>
   </div>
@@ -654,9 +658,15 @@ a { color: inherit; text-decoration: none; }
     <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;">
       <button class="btn btn-ghost btn-sm" onclick="startVoice('use')">🎤 Voice Usage</button>
       <button class="btn btn-ghost btn-sm" onclick="window.print()">⎙ Print</button>
-      <button class="btn btn-primary btn-sm" onclick="openAddItemModal()">+ Add Item</button>
     </div>
   </div>
+
+  <div class="hero-action-wrap">
+    <button class="btn btn-primary" onclick="openAddItemModal()">
+      + Add New Item
+    </button>
+  </div>
+
   <div id="universal-voice-status" style="font-family:var(--mono);font-size:.85rem;color:var(--grove);margin-bottom:1rem;font-style:italic;"></div>
 
   <div class="summary-grid" id="inv-summary">
@@ -753,8 +763,13 @@ a { color: inherit; text-decoration: none; }
     <div><div class="section-title"><small>Module 03</small>Menu Planner & Ops</div></div>
     <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
       <button class="btn btn-ghost btn-sm" id="show-available-btn" onclick="toggleAvailableOnly()">◈ In-Stock Only</button>
-      <button class="btn btn-primary btn-sm" onclick="openAddRecipeModal()">+ New Plan</button>
     </div>
+  </div>
+
+  <div class="hero-action-wrap">
+    <button class="btn btn-primary" onclick="openAddRecipeModal()">
+      + Create New Plan
+    </button>
   </div>
 
   <div id="recipe-list-view">
@@ -787,9 +802,12 @@ a { color: inherit; text-decoration: none; }
 <section id="view-finance" class="view">
   <div class="section-header">
     <div><div class="section-title"><small>Module 04 · Tight Ship</small>Finance Dashboard</div></div>
-    <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
-      <button class="btn btn-ghost btn-sm" onclick="showView('log-tx', document.querySelector('.pnav-btn:nth-child(6)'))">+ Log Transaction</button>
-    </div>
+  </div>
+
+  <div class="hero-action-wrap">
+    <button class="btn btn-primary" onclick="showView('log-tx', document.querySelector('.pnav-btn:nth-child(6)'))">
+      + Log Transaction
+    </button>
   </div>
 
   <div class="fin-balance-card" id="fin-balance-card">
@@ -810,16 +828,17 @@ a { color: inherit; text-decoration: none; }
     </div>
   </div>
 
-  <div class="card" id="fin-unpaid-card" style="display:none; border-color: var(--amber-lt); padding: 1.5rem 1.8rem;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
+  <div class="card" id="fin-unpaid-card" style="display:none; border-color: var(--amber-lt); padding: 1.2rem 1.5rem; margin-bottom: 1.5rem;">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
       <div style="display:flex; align-items:center; gap:.5rem;">
         <span style="font-size:1.4rem;">⏱</span>
-        <h3 style="font-family: var(--serif); font-size: 1.2rem; margin: 0; color: var(--ink);">Unpaid Bills</h3>
+        <div>
+          <h3 style="font-family: var(--serif); font-size: 1.1rem; margin: 0; color: var(--ink);">Unpaid Bills</h3>
+          <div style="font-family:var(--mono); font-size: .65rem; color: var(--ink-3); margin-top: .1rem;" id="fin-unpaid-count-label">0 pending</div>
+        </div>
       </div>
-      <strong id="fin-unpaid-total" style="font-family: var(--serif); font-size: 1.6rem; color: var(--amber);">$0.00</strong>
+      <strong id="fin-unpaid-total" style="font-family: var(--serif); font-size: 1.4rem; color: var(--amber);">$0.00</strong>
     </div>
-    <div id="fin-unpaid-list" style="display:flex; flex-direction:column; gap: .6rem;">
-      </div>
   </div>
 
   <div class="sync-banner" id="fin-shop-sync-banner" style="display:none;">
@@ -1901,39 +1920,21 @@ function renderFinanceDashboard() {
   if(fi) fi.textContent=fmt$(income);
   const fs = document.getElementById('fin-spend-total');
   if(fs) fs.textContent=fmt$(spend);
-  // Explicit Unpaid Bills List
+  
+  // Explicit Unpaid Bills Banner ONLY (no itemized list here anymore)
   const unpaidBills = transactions.filter(t=>t.type==='bill'&&!t.isPaid).sort((a,b)=>new Date(a.dueDate||0)-new Date(b.dueDate||0));
   const cardEl = document.getElementById('fin-unpaid-card');
-  const listEl = document.getElementById('fin-unpaid-list');
+  const countLabel = document.getElementById('fin-unpaid-count-label');
   const fut = document.getElementById('fin-unpaid-total');
+  
   if(fut) fut.textContent = fmt$(unpaid);
 
-  if (cardEl && listEl) {
+  if (cardEl && countLabel) {
     if (unpaidBills.length === 0) {
       cardEl.style.display = 'none';
     } else {
       cardEl.style.display = 'block';
-      listEl.innerHTML = '';
-      unpaidBills.forEach(tx => {
-        const daysAway = daysDiff(new Date(), new Date(tx.dueDate));
-        let bc = 'badge-neutral', bt = `Due ${fmtDate(tx.dueDate)}`;
-        
-        if (daysAway < 0) { bc = 'badge-danger'; bt = `Overdue ${Math.abs(daysAway)}d`; }
-        else if (daysAway === 0) { bc = 'badge-danger'; bt = 'Due today'; }
-        else if (daysAway <= 3) { bc = 'badge-warn'; bt = `Due in ${daysAway}d`; }
-
-        listEl.innerHTML += `
-          <div style="display:flex; justify-content:space-between; align-items:center; padding: .8rem; background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--r);">
-            <div>
-              <div style="font-weight:600; font-size:.85rem; color: var(--ink);">${sanitize(tx.description)}</div>
-              <div style="font-family:var(--mono); font-size:.6rem; color:var(--ink-3); margin-top:.2rem;">Billed: ${fmtDate(tx.date)}</div>
-            </div>
-            <div style="text-align:right;">
-              <div style="font-family:var(--mono); font-weight:500; font-size:.85rem; color: var(--amber); margin-bottom:.3rem;">${fmt$(tx.amount)}</div>
-              <span class="badge ${bc}">${bt}</span>
-            </div>
-          </div>`;
-      });
+      countLabel.textContent = `${unpaidBills.length} pending`;
     }
   }
 
