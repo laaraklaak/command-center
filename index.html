@@ -6,6 +6,7 @@
 <title>HQ · Command Centre v2</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
 
 <style>
 /* ══════════════════════════════════════════════════════════════════
@@ -69,6 +70,35 @@
   --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ══ MODULE COLOR CODING (THE MAGIC TINTS) ══════════════════════ */
+#view-inventory {
+  --surface: #19231d;       /* Subtle green tint */
+  --surface-2: #212e26;
+  --border-soft: #283b30;
+  --mod-accent: var(--grove);
+}
+#view-shopping {
+  --surface: #161e26;       /* Subtle blue tint */
+  --surface-2: #1c2833;
+  --border-soft: #243545;
+  --mod-accent: var(--sky);
+}
+#view-menu {
+  --surface: #262118;       /* Subtle warm/amber tint */
+  --surface-2: #332b1e;
+  --border-soft: #403422;
+  --mod-accent: var(--amber);
+}
+#view-finance, #view-log-tx {
+  --surface: #211c26;       /* Subtle plum/amethyst tint */
+  --surface-2: #2b2433;
+  --border-soft: #382c42;
+  --mod-accent: #9f82b5;
+}
+#view-settings {
+  --mod-accent: var(--ink-3);
+}
+
 /* ══ RESET ══════════════════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 14px; scroll-behavior: smooth; color-scheme: dark; }
@@ -114,26 +144,25 @@ a { color: inherit; text-decoration: none; }
 .masthead-balance .amt { font-weight: 500; color: var(--fin-income); }
 .masthead-balance .amt.neg { color: var(--fin-spend); }
 
-/* ══ PRIMARY NAV ════════════════════════════════════════════════ */
+/* ══ DESKTOP PRIMARY NAV ════════════════════════════════════════ */
 .primary-nav {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
   display: flex;
-  padding: 0 1rem;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  padding: 0 1.5rem;
+  justify-content: center;
   position: sticky;
   top: 52px;
   z-index: 190;
 }
-.primary-nav::-webkit-scrollbar { display: none; }
 .pnav-btn {
+  position: relative;
   background: none;
   border: none;
   border-bottom: 2px solid transparent;
-  padding: 1.1rem 1rem;
+  padding: 1rem 1.2rem;
   font-family: var(--mono);
-  font-size: .72rem;
+  font-size: .7rem;
   letter-spacing: .1em;
   text-transform: uppercase;
   color: var(--ink-3);
@@ -142,18 +171,30 @@ a { color: inherit; text-decoration: none; }
   display: flex;
   align-items: center;
   gap: .5rem;
-  flex-shrink: 0;
 }
 .pnav-btn:hover { color: var(--ink); background: var(--surface); }
 .pnav-btn.active {
   color: var(--ink);
   border-bottom-color: var(--mod-accent, var(--grove));
   font-weight: 600;
+  background: linear-gradient(to top, rgba(255,255,255,0.03) 0%, transparent 100%);
 }
-.pnav-btn .mod-tag { font-size: .55rem; background: var(--border); border-radius: 3px; padding: .1rem .3rem; color: var(--ink-3); }
-.pnav-btn.active .mod-tag { background: transparent; color: inherit; border: 1px solid var(--mod-accent, var(--grove)); }
-.nav-badge { display: inline-flex; align-items: center; justify-content: center; background: var(--amber); color: var(--bg); width: 15px; height: 15px; border-radius: 50%; font-size: .58rem; margin-left: .2rem; font-weight: 700; }
+.mod-icon { font-size: 1.1rem; }
+.nav-badge {
+  position: absolute;
+  top: 0.5rem; right: 0.2rem;
+  display: inline-flex; align-items: center; justify-content: center; 
+  background: var(--amber); color: var(--bg); 
+  width: 15px; height: 15px; border-radius: 50%; 
+  font-size: .55rem; font-weight: 700;
+}
 .nav-badge.fin { background: var(--fin-spend); color: #fff; }
+
+/* Set active colors in nav dynamically based on view id */
+.Primary-nav-green { --mod-accent: var(--grove) !important; }
+.Primary-nav-blue { --mod-accent: var(--sky) !important; }
+.Primary-nav-amber { --mod-accent: var(--amber) !important; }
+.Primary-nav-plum { --mod-accent: var(--plum) !important; }
 
 /* ══ MAIN CONTENT AREA ══════════════════════════════════════════ */
 .app-main { flex: 1; padding: 1.5rem; max-width: 1200px; margin: 0 auto; width: 100%; }
@@ -178,19 +219,6 @@ a { color: inherit; text-decoration: none; }
 .btn-fin:hover { background: var(--sky); color: #fff; }
 .btn-sm { padding: .3rem .7rem; font-size: .62rem; }
 .btn-icon { width: 30px; height: 30px; padding: 0; justify-content: center; border-radius: var(--r); }
-
-/* ══ MODULE SPECIFIC TINTS ══════════════════════════════════════ */
-#view-dashboard { --mod-accent: var(--ink); }
-#view-inventory { --mod-accent: var(--grove); --tint-lt: #19231d; }
-#view-shopping { --mod-accent: var(--sky); --tint-lt: #161e26; }
-#view-menu { --mod-accent: var(--amber); --tint-lt: #262118; }
-#view-finance, #view-log-tx { --mod-accent: var(--plum); --tint-lt: #211c26; }
-
-/* Set active colors in nav dynamically based on view id */
-.Primary-nav-green { --mod-accent: var(--grove) !important; }
-.Primary-nav-blue { --mod-accent: var(--sky) !important; }
-.Primary-nav-amber { --mod-accent: var(--amber) !important; }
-.Primary-nav-plum { --mod-accent: var(--plum) !important; }
 
 /* Apply tints inside views */
 #view-inventory .form-card, #view-inventory .data-table-wrap, 
@@ -506,22 +534,65 @@ a { color: inherit; text-decoration: none; }
 
 /* ══ RESPONSIVE ══════════════════════════════════════════════════ */
 @media (max-width: 640px) {
-  .app-main { padding: 1rem; }
+  .app-main { padding: 1rem 1rem 80px 1rem; } /* Padded so content clears bottom bar */
   .masthead { padding: 0 1rem; }
-  /* Sub-nav horizontal scroll styling */
-  .primary-nav { padding: 0; justify-content: flex-start; }
-  .pnav-btn { padding: 1.1rem .8rem; font-size: .7rem; }
   
+  /* THE MOBILE NATIVE TAB BAR */
+  .primary-nav { 
+      position: fixed; 
+      top: auto; 
+      bottom: 0; 
+      left: 0; 
+      right: 0; 
+      height: auto; 
+      padding: 0 0.2rem calc(env(safe-area-inset-bottom) + 0.2rem) 0.2rem; 
+      border-top: 1px solid var(--border); 
+      border-bottom: none; 
+      background: rgba(30, 36, 33, 0.95); 
+      backdrop-filter: blur(10px); 
+      justify-content: space-around; 
+  }
+  .pnav-btn { 
+      flex-direction: column; 
+      padding: 0.6rem 0; 
+      gap: 0.3rem; 
+      flex: 1; 
+      border-bottom: none !important; 
+      border-top: 2px solid transparent; 
+  }
+  .pnav-btn.active { 
+      border-top-color: var(--mod-accent, var(--grove)); 
+      background: linear-gradient(to bottom, rgba(255,255,255,0.05) 0%, transparent 100%); 
+  }
+  
+  /* Native App Icon and Text Sizing */
+  .mod-icon { font-size: 1.3rem; }
+  .nav-text { font-size: 0.55rem; font-weight: 600; letter-spacing: 0.05em; }
+  
+  /* Badge positioning for mobile */
+  .nav-badge { 
+      top: 0.2rem; 
+      right: 50%; 
+      transform: translateX(10px); 
+      width: 14px; 
+      height: 14px; 
+      font-size: 0.5rem; 
+  }
+
+  /* Adjust grid spacing for mobile */
   .summary-grid { grid-template-columns: 1fr 1fr; }
   .fin-stats-grid { grid-template-columns: 1fr 1fr; }
   .recipe-grid { grid-template-columns: 1fr; }
+  
+  /* Mobile data tables */
   .data-table thead { display: none; }
   .data-table tbody tr { display: block; padding: .5rem; margin-bottom: .5rem; border: 1px solid var(--border-soft); border-radius: var(--r); }
   .data-table td { display: flex; justify-content: space-between; padding: .3rem .5rem; font-size: .75rem; }
   .data-table td::before { content: attr(data-label); font-family: var(--mono); font-size: .58rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); font-weight: 500; }
+  
   .masthead-balance { display: none; }
   
-  /* Dashboard specific mobile */
+  /* Dashboard specific mobile layout */
   .landing-header h1 { font-size: 1.8rem; }
   .nav-card { padding: 1.8rem; gap: 0.4rem; }
   .nav-card h2 { font-size: 1.5rem; }
@@ -550,28 +621,28 @@ a { color: inherit; text-decoration: none; }
 
 <nav class="primary-nav" id="main-nav">
   <button class="pnav-btn active" onclick="showView('dashboard', this)" data-mod="">
-    <span class="mod-tag">⌂</span> Dashboard
+    <i class="ph-fill ph-squares-four mod-icon"></i> <span class="nav-text">Dash</span>
   </button>
   <button class="pnav-btn" onclick="showView('inventory', this)" data-mod="green">
-    <span class="mod-tag">01</span> Inventory
+    <i class="ph-fill ph-archive mod-icon"></i> <span class="nav-text">Inv</span>
     <span class="nav-badge" id="low-badge" style="display:none">0</span>
   </button>
   <button class="pnav-btn" onclick="showView('shopping', this)" data-mod="blue">
-    <span class="mod-tag">02</span> Shopping
+    <i class="ph-fill ph-shopping-cart mod-icon"></i> <span class="nav-text">Shop</span>
     <span class="nav-badge" id="shop-badge" style="display:none">0</span>
   </button>
   <button class="pnav-btn" onclick="showView('menu', this)" data-mod="amber">
-    <span class="mod-tag">03</span> Menu
+    <i class="ph-fill ph-book-open mod-icon"></i> <span class="nav-text">Menu</span>
   </button>
   <button class="pnav-btn" onclick="showView('finance', this)" data-mod="plum">
-    <span class="mod-tag">04</span> Finance
+    <i class="ph-fill ph-wallet mod-icon"></i> <span class="nav-text">Fin</span>
     <span class="nav-badge fin" id="bills-badge" style="display:none">0</span>
   </button>
   <button class="pnav-btn" onclick="showView('log-tx', this)" data-mod="plum">
-    <span class="mod-tag">+</span> Log
+    <i class="ph-fill ph-plus-circle mod-icon"></i> <span class="nav-text">Log</span>
   </button>
   <button class="pnav-btn" onclick="showView('settings', this)" data-mod="">
-    <span class="mod-tag">⚙</span> Settings
+    <i class="ph-fill ph-gear mod-icon"></i> <span class="nav-text">Config</span>
   </button>
 </nav>
 
@@ -584,7 +655,6 @@ a { color: inherit; text-decoration: none; }
   </div>
 
   <div class="landing-grid">
-    
     <div class="nav-card card-inv" onclick="showView('inventory', document.querySelector('[data-mod=green]'))">
       <div class="card-meta"><span>Module 01</span><span class="badge badge-green">Pantry</span></div>
       <h2>Inventory <span>Ledger</span></h2>
@@ -636,10 +706,9 @@ a { color: inherit; text-decoration: none; }
       <h2>System <span>Config</span></h2>
       <p>Manage data persistence, export ledgers to CSV, share app, or wipe local data.</p>
       <div class="card-summary">
-        <div>v2.0.1 · Local + Cloud</div>
+        <div>v2.0.2 · Native Layout</div>
       </div>
     </div>
-
   </div>
 </section>
 
@@ -945,7 +1014,7 @@ a { color: inherit; text-decoration: none; }
   <div style="margin-top:1.5rem;">
     <h3 style="font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:.75rem;margin-left:.1rem;">About HQ Command Centre v2</h3>
     <div class="data-table-wrap" style="padding:1.2rem;font-family:var(--mono);font-size:.72rem;color:var(--ink-3);line-height:1.8;">
-      <p> Unified dashboard merging <strong style="color:var(--ink)">Pantry Command</strong> (inventory, shopping, menu planning) with <strong style="color:var(--ink)">Tight Ship</strong> (personal finance tracking).</p>
+      <p>Unified dashboard merging <strong style="color:var(--ink)">Pantry Command</strong> (inventory, shopping, menu planning) with <strong style="color:var(--ink)">Tight Ship</strong> (personal finance tracking).</p>
       <p style="margin-top:.5rem;">Shopping list integrates with Finance — log checked purchases directly as spend transactions.</p>
       <p style="margin-top:.5rem;">Pantry data syncs via <strong style="color:var(--grove)">Firebase Firestore</strong> (cloud + offline). Finance data stored in <strong style="color:var(--sky)">localStorage</strong> (device-only).</p>
     </div>
@@ -1025,13 +1094,6 @@ a { color: inherit; text-decoration: none; }
     </div>
     <div class="modal-body">
       <div class="form-card" style="background:var(--surface-2);border-color:var(--border-soft);margin-bottom:1rem;padding:.9rem;">
-        <h3 style="margin-bottom:.4rem;color:var(--mod-accent, var(--amber));font-size:.85rem;">🌐 Import from URL</h3>
-        <div class="input-mic-wrap" style="align-items:flex-end;">
-          <input type="url" id="rec-url-import" placeholder="https://..." style="background:var(--bg-2);">
-          <button type="button" class="btn btn-primary btn-sm" id="btn-import-url" onclick="importFromUrl()">Import</button>
-        </div>
-      </div>
-      <div class="form-card" style="background:var(--surface-2);border-color:var(--border-soft);margin-bottom:1rem;padding:.9rem;">
         <h3 style="margin-bottom:.4rem;font-size:.85rem;">📋 Smart Paste</h3>
         <div class="input-mic-wrap" style="align-items:flex-end;">
           <textarea id="rec-smart-paste" placeholder="Paste raw recipe text here..." rows="3" style="background:var(--bg-2);"></textarea>
@@ -1047,7 +1109,16 @@ a { color: inherit; text-decoration: none; }
           <select id="rec-cat"><option>Breakfast</option><option>Lunch</option><option selected>Dinner</option><option>Snack</option><option>Dessert</option><option>Cleaning Plan</option></select>
         </div>
       </div>
-      <div class="form-group" style="margin-bottom:.65rem;"><label>Required Items (one per line: "2 lbs rice") *</label><textarea id="rec-ingredients" placeholder="2 lbs jasmine rice&#10;1 btl soy sauce" rows="5" required></textarea></div>
+      <div class="form-group" style="margin-bottom:.65rem;">
+        <label>Required Items (one per line: "2 lbs rice") *</label>
+        <div class="input-mic-wrap" style="align-items: flex-end;">
+            <textarea id="rec-ingredients" placeholder="2 lbs jasmine rice&#10;1 btl soy sauce" rows="5" required style="width: 100%;"></textarea>
+            <button class="mic-btn" id="rec-mic-btn" onclick="startVoice('recipe-ingredients')" type="button" title="Dictate Ingredients">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0014 0M12 19v3M9 22h6"/></svg>
+            </button>
+        </div>
+        <div class="voice-status" id="rec-voice-status"></div>
+      </div>
       <div class="form-group"><label>Instructions</label><textarea id="rec-instructions" placeholder="Step-by-step..." rows="4"></textarea></div>
     </div>
     <div class="modal-footer">
@@ -1073,7 +1144,6 @@ a { color: inherit; text-decoration: none; }
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-functions.js"></script>
 
 <script>
 /* ══════════════════════════════════════════════════════════════════
@@ -1185,12 +1255,10 @@ function showView(id, btn) {
 
   // Set Nav color tint dynamically based on the active module
   const nav = document.getElementById('main-nav');
-  // Reset classes
   nav.classList.remove('Primary-nav-green', 'Primary-nav-blue', 'Primary-nav-amber', 'Primary-nav-plum');
   if (btn && btn.dataset.mod) {
     nav.classList.add('Primary-nav-' + btn.dataset.mod);
   } else {
-     // Find mod tint if clicked from dashboard
      const correspondingBtn = document.querySelector(`.pnav-btn[onclick*="'${id}'"]`);
      if (correspondingBtn && correspondingBtn.dataset.mod) {
          nav.classList.add('Primary-nav-' + correspondingBtn.dataset.mod);
@@ -1199,8 +1267,6 @@ function showView(id, btn) {
 
   window.scrollTo(0,0);
   if (id === 'finance') { renderFinanceDashboard(); updateFinShopSync(); }
-  
-  // Update dashboard stats when showing dashboard
   if (id === 'dashboard') { updateDashboardSummary(); }
 }
 
@@ -1230,17 +1296,24 @@ function updateDashboardSummary() {
     const {available, unpaid} = calcFinanceTotals();
     const unpaidBillsCount = transactions.filter(t=>t.type==='bill' && !t.isPaid).length;
 
-    document.getElementById('dash-inv-total').textContent = invTotal;
-    document.getElementById('dash-inv-low').textContent = invLow;
-    document.getElementById('dash-shop-qty').textContent = shopQty;
-    document.getElementById('dash-shop-total').textContent = fmt$(shopTotal);
-    document.getElementById('dash-menu-plans').textContent = menuPlans;
+    const dit = document.getElementById('dash-inv-total');
+    if(dit) dit.textContent = invTotal;
+    const dil = document.getElementById('dash-inv-low');
+    if(dil) dil.textContent = invLow;
+    const dsq = document.getElementById('dash-shop-qty');
+    if(dsq) dsq.textContent = shopQty;
+    const dst = document.getElementById('dash-shop-total');
+    if(dst) dst.textContent = fmt$(shopTotal);
+    const dmp = document.getElementById('dash-menu-plans');
+    if(dmp) dmp.textContent = menuPlans;
     
     const balEl = document.getElementById('dash-fin-bal');
-    balEl.textContent = fmt$(available);
-    balEl.className = available < 0 ? 'stat neg' : '';
-    
-    document.getElementById('dash-fin-bills').textContent = unpaidBillsCount;
+    if(balEl) {
+        balEl.textContent = fmt$(available);
+        balEl.className = available < 0 ? 'stat neg' : '';
+    }
+    const dfb = document.getElementById('dash-fin-bills');
+    if(dfb) dfb.textContent = unpaidBillsCount;
 }
 
 /* ══════════════════════════════════════════════════════════════════
@@ -1375,12 +1448,17 @@ function updateBadges() {
   if(lb){ lb.style.display=low>0?'inline-flex':'none'; lb.textContent=low; }
   if(sb){ sb.style.display=shop>0?'inline-flex':'none'; sb.textContent=shop; }
   if(bb){ bb.style.display=bills>0?'inline-flex':'none'; bb.textContent=bills; }
-  // Update header balance
+  
   const {available} = calcFinanceTotals();
   const hb = document.getElementById('header-balance');
   if(hb){
     hb.textContent = fmt$(available);
     hb.className = 'amt' + (available < 0 ? ' neg' : '');
+  }
+  
+  // Also update dashboard summary if visible
+  if(document.getElementById('view-dashboard').classList.contains('active')) {
+      updateDashboardSummary();
   }
 }
 
@@ -1477,9 +1555,7 @@ function updateFinShopSync() {
   const total = checked.reduce((s,i) => s+(i.price||0)*(i.qty||1), 0);
   const banner = document.getElementById('fin-shop-sync-banner');
   const ft = document.getElementById('shop-fin-total');
-  // shopping tab preview
   if (ft) ft.textContent = '$'+total.toFixed(2);
-  // finance tab banner
   if (banner) {
     if (checked.length > 0) {
       banner.style.display = 'flex';
@@ -1521,34 +1597,9 @@ function logShoppingToFinance() {
 ══════════════════════════════════════════════════════════════════ */
 function openAddRecipeModal() {
   ['rec-name','rec-servings','rec-time','rec-ingredients','rec-instructions','rec-smart-paste'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
-  document.getElementById('rec-url-import').value='';
   document.getElementById('rec-cat').value='Dinner';
   openModal('recipe-modal');
   setTimeout(()=>document.getElementById('rec-name').focus(),80);
-}
-async function importFromUrl() {
-  const urlInput=document.getElementById('rec-url-import').value.trim();
-  if(!urlInput){toast('Please enter a URL.','warn');return;}
-  const btn=document.getElementById('btn-import-url');
-  btn.textContent='Importing…';btn.disabled=true;
-  try {
-    const fn=firebase.functions().httpsCallable('scrapeRecipe');
-    const result=await fn({url:urlInput});
-    if(result.data.success){
-      const r=result.data.recipe;
-      document.getElementById('rec-name').value=r.name||'';
-      if(r.ingredients&&Array.isArray(r.ingredients)) document.getElementById('rec-ingredients').value=r.ingredients.join('\n');
-      if(r.instructions){
-        let inst='';
-        if(Array.isArray(r.instructions)) inst=r.instructions.map((s,i)=>`${i+1}. ${typeof s==='string'?s:s.text||''}`).join('\n\n');
-        else inst=r.instructions;
-        document.getElementById('rec-instructions').value=inst;
-      }
-      document.getElementById('rec-url-import').value='';
-      toast('Recipe imported!','success');
-    } else {toast(result.data.error||'Could not extract recipe data.','warn');}
-  } catch(err){toast('Error importing. Cloud function may not be deployed.','danger');}
-  finally{btn.textContent='Import';btn.disabled=false;}
 }
 
 // ── HEURISTIC PARSER (WITH HEADER KILLER) ──
@@ -2135,15 +2186,24 @@ function startVoice(target) {
   if(!SR){toast('Voice input not supported in this browser.','warn');return;}
   voiceTarget=target;
   let micBtn,statusEl;
+  
+  // Set up specific UI connections based on what button was clicked
   if(target==='use') statusEl=document.getElementById('universal-voice-status');
-  else{
-    micBtn=document.getElementById(target==='inventory'?'inv-mic-btn':'sl-mic-btn');
-    statusEl=document.getElementById(target==='inventory'?'inv-voice-status':'sl-voice-status');
+  else if(target==='recipe-ingredients') {
+      micBtn=document.getElementById('rec-mic-btn');
+      statusEl=document.getElementById('rec-voice-status');
   }
+  else {
+      micBtn=document.getElementById(target==='inventory'?'inv-mic-btn':'sl-mic-btn');
+      statusEl=document.getElementById(target==='inventory'?'inv-voice-status':'sl-voice-status');
+  }
+  
   if(recognition){recognition.abort();recognition=null;if(micBtn) micBtn.classList.remove('listening');if(statusEl) statusEl.textContent='';return;}
   recognition=new SR();recognition.lang='en-US';recognition.interimResults=false;recognition.maxAlternatives=1;
+  
   if(micBtn) micBtn.classList.add('listening');
   if(statusEl) statusEl.textContent=target==='use'?'🎤 Say "I used 2 rolls of paper towels"':'Listening…';
+  
   recognition.onresult=e=>{
     const t=e.results[0][0].transcript;
     if(statusEl) statusEl.textContent=`"${t}"`;
@@ -2161,7 +2221,18 @@ function startVoice(target) {
 }
 
 function applyVoiceInput(target,transcript) {
+  // If the target is the recipe ingredients box, simply append the text directly
+  if (target === 'recipe-ingredients') {
+      const textarea = document.getElementById('rec-ingredients');
+      const currentVal = textarea.value;
+      // Append the dictated line, taking care to add a newline if the box isn't empty
+      textarea.value = currentVal ? currentVal + '\n' + transcript : transcript;
+      toast('Ingredient added!', 'success');
+      return;
+  }
+
   const p=parseSpokenItem(transcript);
+  
   if(target==='use'){
     if(!p.name){toast('Could not understand item name.','warn');return;}
     const nl=p.name.toLowerCase();
