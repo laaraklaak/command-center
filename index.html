@@ -342,6 +342,7 @@ a { color: inherit; text-decoration: none; }
     <span class="tagline">Command Centre v3</span>
   </div>
   <div class="masthead-right">
+    <button class="btn btn-ghost btn-sm" onclick="openGlobalEditor()" style="border-color: var(--border);">✎ Quick Edit</button>
     <div class="masthead-balance">
       <span style="color:var(--ink-3);">balance</span>
       <span class="amt" id="header-balance">$0.00</span>
@@ -482,9 +483,7 @@ a { color: inherit; text-decoration: none; }
     </div>
   </div>
 
-  <div id="task-list-container">
-    <div class="empty-state" id="task-empty" style="display:none;"><div class="icon">⏱</div><p>All clear. No upcoming tasks.</p></div>
-  </div>
+  <div id="task-list-container"></div>
 </section>
 
 <section id="view-finance" class="view">
@@ -758,6 +757,30 @@ a { color: inherit; text-decoration: none; }
   </div>
 </div>
 
+<div class="modal-overlay" id="global-editor-modal">
+  <div class="modal" style="border-top: 3px solid var(--ink-2);">
+    <div class="modal-header">
+      <h3>Global Data Editor</h3>
+      <button type="button" class="btn btn-ghost btn-sm" onclick="closeModal('global-editor-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Select Data Module</label>
+        <select id="global-module-select" onchange="populateGlobalItems()">
+          <option value="">-- Choose Module --</option>
+          <option value="shopping">Shopping Manifest</option>
+          <option value="tasks">Time Tracker</option>
+          <option value="finance">Finance Ledger</option>
+        </select>
+      </div>
+      <div class="form-group" id="global-item-group" style="display:none; margin-top: 1rem;">
+        <label>Select Item to Edit</label>
+        <select id="global-item-select" onchange="loadItemToEdit()"></select>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="toast-container"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
@@ -1002,7 +1025,6 @@ function deleteTask(id) {
 
 function renderTasks() {
   const container = document.getElementById('task-list-container');
-  const empty = document.getElementById('task-empty');
   const search = document.getElementById('task-search').value.toLowerCase();
   
   // Sort tasks chronologically
@@ -1032,11 +1054,11 @@ function renderTasks() {
   }
 
   container.innerHTML = '';
+  
   if(filtered.length === 0) {
-    container.appendChild(empty);
-    empty.style.display = 'block';
+    // FIX: Safely inject empty state without wiping hidden DOM nodes
+    container.innerHTML = '<div class="empty-state"><div class="icon">⏱</div><p>All clear. No upcoming tasks.</p></div>';
   } else {
-    empty.style.display = 'none';
     let currentDate = '';
     
     filtered.forEach(t => {
@@ -1092,6 +1114,20 @@ function checkUrgentTasks() {
 /* ══════════════════════════════════════════════════════════════════
    MODULE 03 — FINANCE
 ══════════════════════════════════════════════════════════════════ */
+// FIX: Added the missing toggle function for the finance ledger
+function toggleLedger() {
+  const container = document.getElementById('ledger-container');
+  const chevron = document.getElementById('ledger-chevron');
+  
+  if (container.style.display === 'none') {
+    container.style.display = 'block';
+    chevron.classList.add('open');
+  } else {
+    container.style.display = 'none';
+    chevron.classList.remove('open');
+  }
+}
+
 function calcFinanceTotals() {
   let income=0,spend=0,unpaid=0;
   transactions.forEach(tx=>{
@@ -1373,6 +1409,72 @@ function openShareQR() {
   });
   
   openModal('qr-modal');
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   GLOBAL DATA EDITOR
+══════════════════════════════════════════════════════════════════ */
+function openGlobalEditor() {
+  document.getElementById('global-module-select').value = '';
+  document.getElementById('global-item-group').style.display = 'none';
+  openModal('global-editor-modal');
+}
+
+function populateGlobalItems() {
+  const mod = document.getElementById('global-module-select').value;
+  const itemSelect = document.getElementById('global-item-select');
+  const group = document.getElementById('global-item-group');
+  
+  itemSelect.innerHTML = '<option value="">-- Select Item --</option>';
+  
+  if (!mod) { group.style.display = 'none'; return; }
+  
+  let data = [];
+  if (mod === 'shopping') data = shoppingList;
+  if (mod === 'tasks') data = tasks;
+  if (mod === 'finance') data = transactions;
+
+  if (data.length === 0) {
+    itemSelect.innerHTML = '<option value="">(No data found)</option>';
+  } else {
+    data.forEach(item => {
+      // Create a sensible label based on the object type
+      let label = item.name || item.description || 'Unnamed Item';
+      if (item.amount) label += ` ($${item.amount})`;
+      itemSelect.innerHTML += `<option value="${item.id}">${sanitize(label)}</option>`;
+    });
+  }
+  group.style.display = 'block';
+}
+
+function loadItemToEdit() {
+  const mod = document.getElementById('global-module-select').value;
+  const id = document.getElementById('global-item-select').value;
+  
+  if (!id) return;
+  
+  // Close the global vault and route the user directly to the module's native edit modal
+  closeModal('global-editor-modal');
+  
+  if (mod === 'tasks') {
+    showView('time', document.querySelector('[data-mod=amber]'));
+    openTaskModal(id);
+  } else if (mod === 'finance') {
+    showView('finance', document.querySelector('[data-mod=plum]'));
+    openFinModal(id);
+  } else if (mod === 'shopping') {
+    showView('shopping', document.querySelector('[data-mod=blue]'));
+    // Shopping simple prompt fallback since it doesn't have a full modal
+    const item = shoppingList.find(i => i.id === id);
+    const newName = prompt("Edit item name:", item.name);
+    if (newName !== null && newName.trim() !== "") {
+      item.name = newName;
+      const newPrice = prompt("Edit item price (optional):", item.price || 0);
+      item.price = parseFloat(newPrice) || 0;
+      persistData();
+      renderShopping();
+    }
+  }
 }
 
 /* ══════════════════════════════════════════════════════════════════
